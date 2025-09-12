@@ -1,3 +1,791 @@
 
-<!-- saved from url=(0037)data:text/html,<html contenteditable> -->
-<html contenteditable=""><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body><div>&lt;!DOCTYPE html&gt;</div><div>&lt;html lang="ko"&gt;</div><div>&lt;head&gt;</div><div>&nbsp; &nbsp; &lt;meta charset="UTF-8"&gt;</div><div>&nbsp; &nbsp; &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</div><div>&nbsp; &nbsp; &lt;title&gt;&#52397;&#51452;&#53084;&#54609;&#49328;&#50501;&#54924; &#50612;&#54540;&lt;/title&gt;</div><div>&nbsp; &nbsp; &lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</div><div>&nbsp; &nbsp; &lt;style&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&amp;display=swap');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; body {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; font-family: 'Noto Sans KR', sans-serif;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; background-color: #f3f4f6;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; .draggable {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cursor: grab;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; touch-action: none; /* &#53552;&#52824; &#51060;&#48292;&#53944;&#44032; &#44592;&#48376; &#48652;&#46972;&#50864;&#51200; &#46041;&#51089;&#51012; &#48169;&#54644;&#54616;&#51648; &#50506;&#46020;&#47197; &#54632; */</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; .draggable.dragging {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; opacity: 0.5;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cursor: grabbing;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; .bus-layout {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; display: grid;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; gap: 0.75rem;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; grid-template-columns: repeat(2, 1fr) 2rem repeat(2, 1fr);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; .bus-seat {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; width: 100%;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; height: 4rem;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; display: flex;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; align-items: center;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; justify-content: center;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; font-size: 0.75rem;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; text-align: center;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cursor: pointer; /* &#51340;&#49437; &#53364;&#47533; &#44032;&#45733; &#54364;&#49884; */</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; .aisle-gap {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; grid-column: 3 / 4;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; .editable-field {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cursor: text;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; padding: 0.25rem;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; border-bottom: 1px solid transparent;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; transition: border-color 0.2s ease-in-out;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; min-height: 1.5rem;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; .editable-field:focus {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; outline: none;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; border-bottom: 1px solid #6366f1;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &lt;/style&gt;</div><div>&lt;/head&gt;</div><div>&lt;body class="bg-gray-100 min-h-screen p-4 flex flex-col items-center"&gt;</div><div>&nbsp; &nbsp; &lt;div class="w-full max-w-4xl bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center space-y-8"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- App Title and User ID Display --&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;header class="w-full text-center"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h1 class="text-4xl font-bold text-gray-800 mb-2"&gt;&#9968;&#65039; &#52397;&#51452;&#53084;&#54609;&#49328;&#50501;&#54924;&lt;/h1&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p id="userIdDisplay" class="text-sm text-gray-500 font-mono"&gt;&lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="loadingIndicator" class="text-blue-500 mt-4 hidden"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="animate-spin inline-block h-6 w-6 border-4 border-blue-500 border-solid rounded-full border-r-transparent"&gt;&lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span class="ml-2"&gt;&#47196;&#46377; &#51473;...&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/header&gt;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- Menu Bar --&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;nav class="w-full bg-indigo-600 rounded-lg shadow-md mb-6"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ul class="flex justify-around items-center text-white font-semibold text-lg"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;li id="menu-schedule" class="p-4 border-b-2 border-transparent cursor-pointer hover:bg-indigo-700 transition-colors" onclick="showView('schedule')"&gt;&#49328;&#54665;&#50504;&#45236;&lt;/li&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;li id="menu-board" class="p-4 border-b-2 border-transparent cursor-pointer hover:bg-indigo-700 transition-colors" onclick="showView('board')"&gt;&#51088;&#50976;&#44172;&#49884;&#54032;&lt;/li&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/ul&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/nav&gt;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- Content Section --&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="scheduleSection" class="w-full space-y-6"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h2 class="text-2xl font-semibold text-gray-700 mb-4"&gt;&#128226; &#45796;&#44032;&#50724;&#45716; &#49328;&#54665; &#51068;&#51221;&lt;/h2&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="space-y-4"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-white p-4 rounded-xl shadow border border-gray-200"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h3 class="text-xl font-bold text-gray-800 mb-2"&gt;&#49328;&#54665;&#51221;&#48372;&lt;/h3&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600 mb-1"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;strong class="font-bold"&gt;&#49328;&#54665;&#51068;:&lt;/strong&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="tripDate" class="editable-field" contenteditable="true"&gt;oo&#50900; 00&#51068;(&#53664;) 00&#49884; &#47588;&#51109; &#50526; &#52636;&#48156;&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600 mb-1"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;strong class="font-bold"&gt;&#49328;&#54665;&#51648;:&lt;/strong&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="tripLocation" class="editable-field" contenteditable="true"&gt;&#51109;&#49548;&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600 mb-1"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;strong class="font-bold"&gt;&#49328;&#54665;&#53076;&#49828;:&lt;/strong&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="tripCourse" class="editable-field" contenteditable="true"&gt;&#53076;&#49828;&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-white p-4 rounded-xl shadow border border-gray-200"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h3 class="text-xl font-bold text-gray-800 mb-2"&gt;&#51456;&#48708;&#47932; &#48143; &#51228;&#44277;&lt;/h3&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600 mb-1"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;strong class="font-bold"&gt;&#51456;&#48708;&#47932;:&lt;/strong&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="preparation" class="editable-field" contenteditable="true"&gt;&#44036;&#45800;&#54620; &#44060;&#51064; &#48152;&#52268; &#48143; &#44036;&#49885;&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600 mb-1"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;strong class="font-bold"&gt;&#51228;&#44277;:&lt;/strong&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="supply" class="editable-field" contenteditable="true"&gt;&#51020;&#47308;, &#46497;, &#48165;, &#54616;&#49328;&#51452;, &#46321;&#49328;&#50857;&#54408; &#44221;&#54408;&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-white p-4 rounded-xl shadow border border-gray-200"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h3 class="text-xl font-bold text-gray-800 mb-2"&gt;&#54924;&#48708; &#48143; &#47928;&#51032;&#51204;&#54868;&lt;/h3&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600 mb-1"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;strong class="font-bold"&gt;&#44592;&#48376;&#54924;&#48708;:&lt;/strong&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="fee" class="editable-field" contenteditable="true"&gt;3&#47564; 5&#52380;&#50896;&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span class="text-gray-600"&gt;&#52628;&#44032;&#48708;&#50857;: &lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="extraCost" class="editable-field" contenteditable="true"&gt;&#50976;&#47924;&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600 mb-1"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;strong class="font-bold"&gt;&#51077;&#44552;&#44228;&#51340;:&lt;/strong&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="accountInfo" class="editable-field" contenteditable="true"&gt;&#45453;&#54801; 302-1248-7785-21 (&#50577;&#49692;&#51088;)&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600 mb-1"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;strong class="font-bold"&gt;&#47928;&#51032;&#51204;&#54868;:&lt;/strong&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="contactInfo" class="editable-field" contenteditable="true"&gt;&#53084;&#54609;: 043-264-0278, &#52509;&#47924; &#50577;&#49692;&#51088; 010-6242-5090&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h3 class="text-xl font-bold text-gray-800 mb-2 mt-4"&gt;&#49328;&#54665; &#51473; &#48708;&#49345;&#50672;&#46973;&#52376;&lt;/h3&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600 mb-1"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="emergencyContact1" class="editable-field" contenteditable="true"&gt;010-5331-1675&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-600"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="emergencyContact2" class="editable-field" contenteditable="true"&gt;010-5495-9603&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button onclick="saveTripInfo()" class="px-4 py-2 rounded-lg font-semibold bg-indigo-500 text-white hover:bg-indigo-600 transition-colors w-full sm:w-auto"&gt;&#51221;&#48372; &#51200;&#51109;&lt;/button&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="flex-grow"&gt;&lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span id="registeredCount" class="text-sm font-semibold text-blue-600"&gt;&#49888;&#52397; &#51064;&#50896;: 0&#47749;&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;input id="nameInput" type="text" placeholder="&#51060;&#47492;&#51012; &#51077;&#47141;&#54644; &#51452;&#49464;&#50836;" class="w-full sm:w-auto p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"/&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button onclick="handleRegistration()" class="px-4 py-2 rounded-lg font-semibold bg-blue-500 text-white hover:bg-blue-600 transition-colors w-full sm:w-auto" id="registrationButton"&gt;&#49888;&#52397;&#54616;&#44592;&lt;/button&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- AI Functionality Section --&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200 space-y-4"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h2 class="text-2xl font-semibold text-gray-700 mb-4"&gt;&#129302; &#51064;&#44277;&#51648;&#45733; &#44592;&#45733;&lt;/h2&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-white p-4 rounded-xl shadow border border-gray-200"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h3 class="text-xl font-bold text-gray-800 mb-2"&gt;&#49328;&#54665;&#51648; &#51060;&#48120;&#51648; &#48372;&#44592;&lt;/h3&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="flex flex-col sm:flex-row gap-2 mb-4"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;input id="mountainInput" type="text" placeholder="ex) &#49444;&#50501;&#49328;" class="flex-grow p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" /&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button onclick="generateMountainImage()" class="px-4 py-2 rounded-lg font-semibold bg-green-500 text-white hover:bg-green-600 transition-colors"&gt;&#51060;&#48120;&#51648; &#49373;&#49457;&lt;/button&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="imageDisplay" class="w-full h-48 bg-gray-200 rounded-xl flex items-center justify-center text-gray-500"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#50668;&#44592;&#50640; &#51060;&#48120;&#51648;&#44032; &#54364;&#49884;&#46121;&#45768;&#45796;.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-white p-4 rounded-xl shadow border border-gray-200"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h3 class="text-xl font-bold text-gray-800 mb-2"&gt;&#50504;&#51204;&#54620; &#49328;&#54665; &#50836;&#47161;&lt;/h3&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button onclick="generateHikingTips()" class="px-4 py-2 rounded-lg font-semibold bg-purple-500 text-white hover:bg-purple-600 transition-colors mb-4"&gt;&#50836;&#47161; &#48372;&#44592;&lt;/button&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="tipsDisplay" class="text-sm text-gray-700"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#48260;&#53948;&#51012; &#45580;&#47084; &#50504;&#51204; &#49328;&#54665; &#50836;&#47161;&#51012; &#54869;&#51064;&#54616;&#49464;&#50836;.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- Seat Plan Section --&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="seatPlanSection" class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h2 class="text-2xl font-semibold text-gray-700 mb-4"&gt;&#128186; &#51340;&#49437; &#48176;&#52824; (&#52509; 44&#49437;)&lt;/h2&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bus-layout p-4 rounded-xl bg-gray-200 border border-gray-300"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- Seats are dynamically generated here --&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="userMagnets" class="flex flex-wrap gap-2 mt-4 p-4 rounded-xl bg-gray-100 border border-gray-300 min-h-[5rem]"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- User magnets are placed here --&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="mt-4 text-center text-sm text-gray-500"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#51340;&#49437;&#50640; &#49324;&#50857;&#51088;&#47484; &#46300;&#47000;&#44536;&#54616;&#50668; &#48176;&#52824;&#54616;&#44144;&#45208;, &#51340;&#49437;&#51012; &#53364;&#47533;&#54616;&#50668; &#51060;&#47492;&#51012; &#51077;&#47141;&#54624; &#49688; &#51080;&#49845;&#45768;&#45796;.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- Free Board Section --&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="boardSection" class="w-full space-y-6 hidden"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h2 class="text-2xl font-semibold text-gray-700 mb-4"&gt;&#128221; &#51088;&#50976;&#44172;&#49884;&#54032;&lt;/h2&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-white p-4 rounded-xl shadow border border-gray-200 space-y-4"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;textarea id="postContent" class="w-full h-24 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="&#51088;&#50976;&#47213;&#44172; &#44544;&#51012; &#51089;&#49457;&#54644; &#51452;&#49464;&#50836;..."&gt;&lt;/textarea&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button onclick="submitPost()" class="w-full px-4 py-2 rounded-lg font-semibold bg-indigo-500 text-white hover:bg-indigo-600 transition-colors"&gt;&#44544; &#50732;&#47532;&#44592;&lt;/button&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200 mt-6"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h3 class="text-xl font-semibold text-gray-700 mb-4"&gt;&#52572;&#49888; &#44544; &#47785;&#47197;&lt;/h3&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="postsList" class="space-y-4"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- Posts are dynamically displayed here --&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="text-gray-500 text-center"&gt;&#50500;&#51649; &#44172;&#49884;&#47932;&#51060; &#50630;&#49845;&#45768;&#45796;.&lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &lt;/div&gt;</div><div><br></div><div>&nbsp; &nbsp; &lt;!-- Modal Container --&gt;</div><div>&nbsp; &nbsp; &lt;div id="messageModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center hidden z-50"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-white p-6 rounded-lg shadow-xl text-center"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h3 id="modalMessage" class="text-xl font-bold text-gray-800 mb-4"&gt;&lt;/h3&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button onclick="document.getElementById('messageModal').classList.add('hidden')" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"&gt;&#54869;&#51064;&lt;/button&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &lt;!-- Seat Input Modal --&gt;</div><div>&nbsp; &nbsp; &lt;div id="seatInputModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center hidden z-50"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;h3 class="text-xl font-bold text-gray-800 mb-4"&gt;&#51340;&#49437; &#51060;&#47492; &#51077;&#47141;&lt;/h3&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p id="modal-seat-number" class="text-lg font-semibold text-gray-700 mb-2"&gt;&#51340;&#49437; &#48264;&#54840;: &lt;span&gt;&lt;/span&gt;&lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;input id="modal-name-input" type="text" placeholder="&#51060;&#47492;&#51012; &#51077;&#47141;&#54644; &#51452;&#49464;&#50836;" class="w-full p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow mb-4" /&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="flex justify-center space-x-4"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button onclick="saveSeatName()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"&gt;&#51200;&#51109;&lt;/button&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button onclick="closeSeatInputModal()" class="bg-gray-400 text-white px-6 py-2 rounded-lg hover:bg-gray-500 transition-colors"&gt;&#52712;&#49548;&lt;/button&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &lt;/div&gt;</div><div><br></div><div>&nbsp; &nbsp; &lt;!-- Firebase SDKs --&gt;</div><div>&nbsp; &nbsp; &lt;script type="module"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";</div><div>&nbsp; &nbsp; &nbsp; &nbsp; import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";</div><div>&nbsp; &nbsp; &nbsp; &nbsp; import { getFirestore, doc, onSnapshot, collection, setDoc, updateDoc, arrayUnion, arrayRemove, getDoc, setLogLevel, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; // Firestore settings and variables</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; let app, db, auth, userId;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const publicSchedulesPath = `/artifacts/${appId}/public/data/schedules`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const postsCollectionPath = `/artifacts/${appId}/public/data/posts`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const tripId = 'kolping_trip';</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; const loadingIndicator = document.getElementById('loadingIndicator');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const registrationButton = document.getElementById('registrationButton');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const registeredCountDisplay = document.getElementById('registeredCount');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const nameInput = document.getElementById('nameInput');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const seatContainer = document.querySelector('.bus-layout');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const userMagnetsContainer = document.getElementById('userMagnets');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const imageDisplay = document.getElementById('imageDisplay');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const tipsDisplay = document.getElementById('tipsDisplay');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const scheduleSection = document.getElementById('scheduleSection');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const boardSection = document.getElementById('boardSection');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const postsList = document.getElementById('postsList');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const menuSchedule = document.getElementById('menu-schedule');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const menuBoard = document.getElementById('menu-board');</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; const seatInputModal = document.getElementById('seatInputModal');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const modalSeatNumber = document.getElementById('modal-seat-number').querySelector('span');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; const modalNameInput = document.getElementById('modal-name-input');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; let currentSeatNum = null;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; const totalSeats = 44;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; let isAuthReady = false;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; let seatAssignments = {};</div><div>&nbsp; &nbsp; &nbsp; &nbsp; let userList = [];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; let postsListener = null;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; // Enable debug logging</div><div>&nbsp; &nbsp; &nbsp; &nbsp; setLogLevel('debug');</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; /**</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* Initializes Firebase and handles user authentication.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;*/</div><div>&nbsp; &nbsp; &nbsp; &nbsp; async function initFirebase() {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.log("Firebase initialization started.");</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; loadingIndicator.classList.remove('hidden');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; app = initializeApp(firebaseConfig);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; db = getFirestore(app);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; auth = getAuth(app);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Use a direct sign-in method to ensure authentication is complete before proceeding</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; let user;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (initialAuthToken) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const userCredential = await signInWithCustomToken(auth, initialAuthToken);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; user = userCredential.user;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } else {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const userCredential = await signInAnonymously(auth);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; user = userCredential.user;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Wait for the user to be fully authenticated and permissions to be ready.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await new Promise(resolve =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const unsubscribe = onAuthStateChanged(auth, u =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (u) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; unsubscribe();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; resolve(u);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (user) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.log("Authentication complete. User ID:", user.uid);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; userId = user.uid;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('userIdDisplay').textContent = `&#49324;&#50857;&#51088; ID: ${userId.slice(0, 8)}...`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Add a small delay to ensure permissions are fully loaded</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await new Promise(resolve =&gt; setTimeout(resolve, 300));</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; isAuthReady = true;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Set up Firestore listeners only after authentication is complete</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const scheduleDocRef = doc(db, publicSchedulesPath, tripId);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const postsColRef = collection(db, postsCollectionPath);</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Check for and create initial document with retries if permission is denied</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const maxAttempts = 5;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (let i = 0; i &lt; maxAttempts; i++) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const docSnap = await getDoc(scheduleDocRef);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!docSnap.exists()) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.log("Document does not exist, attempting to create initial document.");</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await setDoc(scheduleDocRef, { registeredUsers: [], assignments: {}, tripInfo: {} });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.log("Initial document created.");</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break; // Exit loop on success</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (error.code === 'permission-denied' &amp;&amp; i &lt; maxAttempts - 1) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.warn(`Attempt ${i + 1} failed due to permission-denied, retrying in 500ms...`);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await new Promise(resolve =&gt; setTimeout(resolve, 500));</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } else {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw error; // Re-throw the error if it's not a permission issue or we've reached max attempts</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Use onSnapshot for real-time data updates</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; onSnapshot(scheduleDocRef, (docSnap) =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const data = docSnap.data();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!docSnap.exists()) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; userList = data?.registeredUsers || [];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; registeredCountDisplay.textContent = `&#49888;&#52397; &#51064;&#50896;: ${userList.length}&#47749;`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const currentUserInfo = userList.find(u =&gt; u.userId === userId);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const isRegistered = !!currentUserInfo;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; nameInput.value = currentUserInfo?.name || '';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; registrationButton.textContent = isRegistered ? '&#49888;&#52397; &#52712;&#49548;' : '&#49888;&#52397;&#54616;&#44592;';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; registrationButton.classList.toggle('bg-red-500', isRegistered);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; registrationButton.classList.toggle('hover:bg-red-600', isRegistered);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; registrationButton.classList.toggle('bg-blue-500', !isRegistered);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; registrationButton.classList.toggle('hover:bg-blue-600', !isRegistered);</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; updateEditableFields(data?.tripInfo);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; updateMagnetsAndSeats(userList, data?.assignments);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }, (error) =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Firestore real-time listener error:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('Failed to load data. Please try again later.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Set up the board listener</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; postsListener = onSnapshot(postsColRef, (snapshot) =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const posts = [];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; snapshot.forEach(doc =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; posts.push({ id: doc.id, ...doc.data() });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Sort by timestamp, newest first</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; posts.sort((a, b) =&gt; b.timestamp - a.timestamp);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; renderPosts(posts);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }, (error) =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Board listener error:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;console.error("Error during initial document creation or verification:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;showMessageModal('An error occurred while loading data. Please try again later.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Firebase initialization error:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('An error occurred. Please check the console.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } finally {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; loadingIndicator.classList.add('hidden');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showView('schedule'); // Set the initial view</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; /**</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* @description Updates editable fields with trip information from Firestore.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;*/</div><div>&nbsp; &nbsp; &nbsp; &nbsp; function updateEditableFields(tripInfo) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!tripInfo) return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('tripDate').textContent = tripInfo.tripDate || 'oo&#50900; 00&#51068;(&#53664;) 00&#49884; &#47588;&#51109; &#50526; &#52636;&#48156;';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('tripLocation').textContent = tripInfo.tripLocation || '&#51109;&#49548;';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('tripCourse').textContent = tripInfo.tripCourse || '&#53076;&#49828;';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('preparation').textContent = tripInfo.preparation || '&#44036;&#45800;&#54620; &#44060;&#51064; &#48152;&#52268; &#48143; &#44036;&#49885;';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('supply').textContent = tripInfo.supply || '&#51020;&#47308;, &#46497;, &#48165;, &#54616;&#49328;&#51452;, &#46321;&#49328;&#50857;&#54408; &#44221;&#54408;';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('fee').textContent = tripInfo.fee || '3&#47564; 5&#52380;&#50896;';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('extraCost').textContent = tripInfo.extraCost || '&#50976;&#47924;';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('accountInfo').textContent = tripInfo.accountInfo || '&#45453;&#54801; 302-1248-7785-21 (&#50577;&#49692;&#51088;)';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('contactInfo').textContent = tripInfo.contactInfo || '&#53084;&#54609;: 043-264-0278, &#52509;&#47924; &#50577;&#49692;&#51088; 010-6242-5090';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('emergencyContact1').textContent = tripInfo.emergencyContact1 || '010-5331-1675';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('emergencyContact2').textContent = tripInfo.emergencyContact2 || '010-5495-9603';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; /**</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* @description Saves the content of the editable fields to Firestore.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;*/</div><div>&nbsp; &nbsp; &nbsp; &nbsp; async function saveTripInfo() {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!isAuthReady) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('User is authenticating. Please try again shortly.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const scheduleDocRef = doc(db, publicSchedulesPath, tripId);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const newTripInfo = {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tripDate: document.getElementById('tripDate').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tripLocation: document.getElementById('tripLocation').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tripCourse: document.getElementById('tripCourse').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; preparation: document.getElementById('preparation').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; supply: document.getElementById('supply').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; fee: document.getElementById('fee').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; extraCost: document.getElementById('extraCost').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; accountInfo: document.getElementById('accountInfo').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; contactInfo: document.getElementById('contactInfo').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; emergencyContact1: document.getElementById('emergencyContact1').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; emergencyContact2: document.getElementById('emergencyContact2').textContent,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; };</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await updateDoc(scheduleDocRef, { tripInfo: newTripInfo });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('Information saved successfully.');</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Error saving information:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('An error occurred while saving information. Please check the console.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; /**</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* @description Updates seats and magnets based on registered users from Firestore.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;*/</div><div>&nbsp; &nbsp; &nbsp; &nbsp; function updateMagnetsAndSeats(registeredUsers, assignments) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seatAssignments = assignments || {};</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seatContainer.innerHTML = '';</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const totalSeats = 44;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const seatsPerRow = 4;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const totalRows = totalSeats / seatsPerRow;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const seatNumbers = [];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (let i = 1; i &lt;= totalSeats; i++) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seatNumbers.push(i);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (let i = 0; i &lt; totalRows; i++) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Left 2 seats</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (let j = 0; j &lt; 2; j++) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const seatNum = seatNumbers[i * seatsPerRow + j];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const seat = createSeatElement(seatNum, registeredUsers, seatAssignments);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seatContainer.appendChild(seat);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Aisle</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const aisle = document.createElement('div');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; aisle.className = 'aisle-gap';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seatContainer.appendChild(aisle);</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Right 2 seats</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (let j = 2; j &lt; seatsPerRow; j++) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const seatNum = seatNumbers[i * seatsPerRow + j];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const seat = createSeatElement(seatNum, registeredUsers, seatAssignments);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seatContainer.appendChild(seat);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Render user magnets</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; userMagnetsContainer.innerHTML = '';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const assignedUserIds = Object.values(seatAssignments);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const unassignedUsers = registeredUsers.filter(u =&gt; !assignedUserIds.includes(u.userId));</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; unassignedUsers.forEach(user =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const magnet = document.createElement('div');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; magnet.className = 'bg-blue-400 text-white px-3 py-1 rounded-full shadow-md text-xs font-semibold draggable hover:bg-blue-500 transition-colors cursor-pointer';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; magnet.textContent = user.name || user.userId.slice(0, 8) + '...';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; magnet.draggable = true;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; magnet.dataset.userId = user.userId;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; magnet.dataset.userName = user.name || '';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; magnet.ondragstart = handleDragStart;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; magnet.addEventListener('touchstart', handleTouchStart);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; userMagnetsContainer.appendChild(magnet);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; function createSeatElement(seatNum, registeredUsers, assignments) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const seat = document.createElement('div');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.id = `seat-${seatNum}`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.className = `bus-seat bg-white rounded-lg shadow-sm border border-gray-300 flex items-center justify-center text-sm text-gray-500 hover:bg-gray-200 transition-colors`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.dataset.seatNumber = seatNum;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Add click event listener for manual input</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.onclick = () =&gt; openSeatInputModal(seatNum);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Add drag and drop listeners</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.ondragover = (e) =&gt; e.preventDefault();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.ondrop = handleDrop;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.addEventListener('touchend', handleTouchEnd);</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const assignedUserId = assignments[seatNum];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const userInfo = assignedUserId ? registeredUsers.find(u =&gt; u.userId === assignedUserId) : null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (userInfo) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.innerHTML = `</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="flex flex-col items-center justify-center"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span class="text-xs font-semibold text-gray-400 mb-1"&gt;&#51340;&#49437; ${seatNum}&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span class="font-bold text-gray-800"&gt;${userInfo.name || '&#51060;&#47492; &#50630;&#51020;'}&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.classList.add('bg-green-300');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.dataset.assignedUserId = assignedUserId;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } else {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seat.innerHTML = `</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="flex flex-col items-center justify-center"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span class="text-xs font-semibold text-gray-400 mb-1"&gt;&#51340;&#49437; ${seatNum}&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;span class="font-bold text-gray-400"&gt;&#48712; &#51340;&#49437;&lt;/span&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return seat;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; let draggedUserId = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; let draggedUserName = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; let draggedFromSeat = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; let touchClone = null;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; function handleDragStart(event) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedUserId = event.target.dataset.userId;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedUserName = event.target.dataset.userName;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedFromSeat = event.target.dataset.seatNumber;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; event.dataTransfer.setData('text/plain', draggedUserId);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; setTimeout(() =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; event.target.classList.add('dragging');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }, 0);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; async function handleDrop(event) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; event.preventDefault();</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!isAuthReady) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('User is authenticating. Please try again shortly.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const droppedOnSeat = event.currentTarget.dataset.seatNumber;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const assignedUserId = event.currentTarget.dataset.assignedUserId;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const draggedElement = document.querySelector('.dragging');</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (assignedUserId) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('This seat is already taken.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (draggedElement) draggedElement.classList.remove('dragging');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedUserId = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedUserName = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedFromSeat = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (draggedUserId &amp;&amp; droppedOnSeat) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const scheduleDocRef = doc(db, publicSchedulesPath, tripId);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const newAssignments = { ...seatAssignments };</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (draggedFromSeat) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; delete newAssignments[draggedFromSeat];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; newAssignments[droppedOnSeat] = draggedUserId;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await updateDoc(scheduleDocRef, { assignments: newAssignments });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Error saving seat assignment:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('An error occurred while saving seat assignment. Please try again later.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (draggedElement) draggedElement.classList.remove('dragging');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedUserId = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedUserName = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedFromSeat = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; // --- Touch Drag and Drop Logic ---</div><div>&nbsp; &nbsp; &nbsp; &nbsp; function handleTouchStart(event) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; event.preventDefault();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedUserId = event.target.dataset.userId;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedUserName = event.target.dataset.userName;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; draggedFromSeat = event.target.dataset.seatNumber;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Clone the element for visual feedback during drag</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; touchClone = event.target.cloneNode(true);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; touchClone.classList.add('dragging');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; touchClone.style.position = 'absolute';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; touchClone.style.zIndex = '1000';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; touchClone.style.pointerEvents = 'none'; // Allow touch events to pass through</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.body.appendChild(touchClone);</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Add touch move listener</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.addEventListener('touchmove', handleTouchMove);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; function handleTouchMove(event) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; event.preventDefault();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (touchClone) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const touch = event.touches[0];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; touchClone.style.left = `${touch.clientX - touchClone.offsetWidth / 2}px`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; touchClone.style.top = `${touch.clientY - touchClone.offsetHeight / 2}px`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; function handleTouchEnd(event) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; event.preventDefault();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Remove touch move listener</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.removeEventListener('touchmove', handleTouchMove);</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (touchClone) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const touch = event.changedTouches[0];</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (targetElement &amp;&amp; targetElement.classList.contains('bus-seat')) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; handleDrop({</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; preventDefault: () =&gt; {},</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; currentTarget: targetElement</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.body.removeChild(touchClone);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; touchClone = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; // --- End of Touch Logic ---</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; /**</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* @description Handles registration and unregistration for the trip.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;*/</div><div>&nbsp; &nbsp; &nbsp; &nbsp; async function handleRegistration() {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!isAuthReady) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('User is authenticating. Please try again shortly.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const name = nameInput.value.trim();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const isRegistered = userList.some(u =&gt; u.userId === userId);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const scheduleDocRef = doc(db, publicSchedulesPath, tripId);</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (isRegistered) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Unregister</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const userToRemove = userList.find(u =&gt; u.userId === userId);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await updateDoc(scheduleDocRef, {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; registeredUsers: arrayRemove(userToRemove),</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; assignments: JSON.parse(JSON.stringify(seatAssignments, (key, value) =&gt; {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (value === userId) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return undefined;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return value;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }))</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('Registration cancelled.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } else {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Register</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!name) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('Please enter your name.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await updateDoc(scheduleDocRef, {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; registeredUsers: arrayUnion({ userId: userId, name: name })</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('Registration complete.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Error handling registration:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('An error occurred during registration. Please check the console.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; // AI functions</div><div>&nbsp; &nbsp; &nbsp; &nbsp; async function generateMountainImage() {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const mountainName = document.getElementById('mountainInput').value.trim();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!mountainName) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('Please enter a mountain name.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; imageDisplay.innerHTML = `&lt;div class="animate-spin h-8 w-8 border-4 border-green-500 border-solid rounded-full border-r-transparent"&gt;&lt;/div&gt;`;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const payload = { instances: [{ prompt: `${mountainName}&#51032; &#50500;&#47492;&#45796;&#50868; &#54413;&#44221; &#49324;&#51652;` }], parameters: { "sampleCount": 1} };</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const apiKey = "";</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const response = await fetch(apiUrl, {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; method: 'POST',</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; headers: { 'Content-Type': 'application/json' },</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; body: JSON.stringify(payload)</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const result = await response.json();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const base64Data = result?.predictions?.[0]?.bytesBase64Encoded;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (base64Data) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; imageDisplay.innerHTML = `&lt;img src="data:image/png;base64,${base64Data}" alt="${mountainName} &#49324;&#51652;" class="w-full h-full object-cover rounded-xl" /&gt;`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } else {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; imageDisplay.innerHTML = `&lt;p class="text-gray-500"&gt;Failed to generate image. Please try again.&lt;/p&gt;`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Image generation error:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; imageDisplay.innerHTML = `&lt;p class="text-gray-500"&gt;An error occurred while generating the image.&lt;/p&gt;`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; async function generateHikingTips() {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tipsDisplay.innerHTML = `&lt;div class="text-center text-gray-500"&gt;&lt;div class="animate-spin inline-block h-6 w-6 border-4 border-purple-500 border-solid rounded-full border-r-transparent"&gt;&lt;/div&gt;&lt;/div&gt;`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const systemPrompt = "Act as an expert providing tips for safe hiking. Explain the key points concisely, listing the sentences in a numbered list. Each item should be 50 characters or less.";</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const userQuery = "&#50504;&#51204;&#54620; &#46321;&#49328; &#50836;&#47161;";</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const apiKey = "";</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const payload = {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; contents: [{ parts: [{ text: userQuery }] }],</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; systemInstruction: { parts: [{ text: systemPrompt }] },</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; };</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const response = await fetch(apiUrl, {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; method: 'POST',</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; headers: { 'Content-Type': 'application/json' },</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; body: JSON.stringify(payload)</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const result = await response.json();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (text) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tipsDisplay.innerHTML = `&lt;pre class="whitespace-pre-wrap"&gt;${text}&lt;/pre&gt;`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } else {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tipsDisplay.innerHTML = `&lt;p class="text-red-500"&gt;Failed to retrieve tips.&lt;/p&gt;`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Tip generation error:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tipsDisplay.innerHTML = `&lt;p class="text-red-500"&gt;An error occurred while generating tips.&lt;/p&gt;`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; // --- Free Board Functions ---</div><div>&nbsp; &nbsp; &nbsp; &nbsp; function showView(viewName) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; scheduleSection.classList.add('hidden');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; boardSection.classList.add('hidden');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; menuSchedule.classList.remove('border-indigo-300', 'text-white');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; menuBoard.classList.remove('border-indigo-300', 'text-white');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; menuSchedule.classList.add('border-transparent', 'text-indigo-200');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; menuBoard.classList.add('border-transparent', 'text-indigo-200');</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (viewName === 'schedule') {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; scheduleSection.classList.remove('hidden');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; menuSchedule.classList.add('border-indigo-300', 'text-white');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; menuSchedule.classList.remove('border-transparent', 'text-indigo-200');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } else if (viewName === 'board') {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; boardSection.classList.remove('hidden');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; menuBoard.classList.add('border-indigo-300', 'text-white');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; menuBoard.classList.remove('border-transparent', 'text-indigo-200');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; async function submitPost() {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!isAuthReady) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('User is authenticating. Please try again shortly.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const content = document.getElementById('postContent').value.trim();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!content) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('Please enter a post content.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const postsColRef = collection(db, postsCollectionPath);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await addDoc(postsColRef, {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; userId: userId,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; userName: userList.find(u =&gt; u.userId === userId)?.name || '&#51061;&#47749;',</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; content: content,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; timestamp: Date.now()</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('postContent').value = '';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('Post registered successfully.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Error submitting post:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('An error occurred while submitting the post. Please check the console.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; function renderPosts(posts) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (posts.length === 0) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; postsList.innerHTML = `&lt;div class="text-gray-500 text-center"&gt;There are no posts yet.&lt;/div&gt;`;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; postsList.innerHTML = posts.map(post =&gt; `</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200"&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-sm font-bold text-gray-800 mb-1"&gt;${post.userName}&lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-gray-700"&gt;${post.content}&lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p class="text-xs text-gray-400 mt-2"&gt;${new Date(post.timestamp).toLocaleString()}&lt;/p&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `).join('');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; // --- Seat Input Modal Functions ---</div><div>&nbsp; &nbsp; &nbsp; &nbsp; function openSeatInputModal(seatNum) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!isAuthReady) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('User is authenticating. Please try again shortly.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; currentSeatNum = seatNum;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; modalSeatNumber.textContent = seatNum;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; modalNameInput.value = '';</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seatInputModal.classList.remove('hidden');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; function closeSeatInputModal() {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; seatInputModal.classList.add('hidden');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; currentSeatNum = null;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; async function saveSeatName() {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const name = modalNameInput.value.trim();</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!name) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('Please enter a name.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; closeSeatInputModal();</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const isRegistered = userList.some(u =&gt; u.name === name);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!isRegistered) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Register the user first if not already</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const scheduleDocRef = doc(db, publicSchedulesPath, tripId);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const newUser = { userId: `manual-${Date.now()}`, name: name };</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await updateDoc(scheduleDocRef, {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; registeredUsers: arrayUnion(newUser)</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const scheduleDocRef = doc(db, publicSchedulesPath, tripId);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const newAssignments = { ...seatAssignments };</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const existingUserId = newAssignments[currentSeatNum];</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // If a user is already assigned to the seat, and it's not the new user, show an error.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // For this implementation, we will allow overwriting for simplicity.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // if (existingUserId &amp;&amp; existingUserId !== userId) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //&nbsp; &nbsp; &nbsp;showMessageModal('This seat is already taken.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //&nbsp; &nbsp; &nbsp;return;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; newAssignments[currentSeatNum] = userId; // Use current user's ID</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await updateDoc(scheduleDocRef, { assignments: newAssignments });</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal(`${name}&#45784;&#51032; &#51340;&#49437;&#51060; &#49457;&#44277;&#51201;&#51004;&#47196; &#51648;&#51221;&#46104;&#50632;&#49845;&#45768;&#45796;.`);</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (error) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; console.error("Error saving seat assignment:", error);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showMessageModal('An error occurred while saving seat assignment. Please try again later.');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; // --- Utility functions ---</div><div>&nbsp; &nbsp; &nbsp; &nbsp; function showMessageModal(message) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const modal = document.getElementById('messageModal');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.getElementById('modalMessage').textContent = message;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; modal.classList.remove('hidden');</div><div>&nbsp; &nbsp; &nbsp; &nbsp; }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; window.onload = initFirebase;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; window.handleRegistration = handleRegistration;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; window.saveTripInfo = saveTripInfo;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; window.generateMountainImage = generateMountainImage;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; window.generateHikingTips = generateHikingTips;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; window.showView = showView;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; window.submitPost = submitPost;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; window.saveSeatName = saveSeatName;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; window.closeSeatInputModal = closeSeatInputModal;</div><div>&nbsp; &nbsp; &lt;/script&gt;</div><div>&lt;/body&gt;</div><div>&lt;/html&gt;</div></body></html>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>청주콜핑산악회 어플</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .draggable {
+            cursor: grab;
+            touch-action: none; /* 터치 이벤트가 기본 브라우저 동작을 방해하지 않도록 함 */
+        }
+        .draggable.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        .bus-layout {
+            display: grid;
+            gap: 0.75rem;
+            grid-template-columns: repeat(2, 1fr) 2rem repeat(2, 1fr);
+        }
+        .bus-seat {
+            width: 100%;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        .aisle-gap {
+            grid-column: 3 / 4;
+        }
+        .editable-field {
+            cursor: text;
+            padding: 0.25rem;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease-in-out;
+            min-height: 1.5rem;
+        }
+        .editable-field:focus {
+            outline: none;
+            border-bottom: 1px solid #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 flex flex-col items-center">
+    <div class="w-full max-w-4xl bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center space-y-8">
+        <!-- App Title and User ID Display -->
+        <header class="w-full text-center">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">⛰️ 청주콜핑산악회</h1>
+            <p id="userIdDisplay" class="text-sm text-gray-500 font-mono"></p>
+            <div id="loadingIndicator" class="text-blue-500 mt-4 hidden">
+                <div class="animate-spin inline-block h-6 w-6 border-4 border-blue-500 border-solid rounded-full border-r-transparent"></div>
+                <span class="ml-2">로딩 중...</span>
+            </div>
+        </header>
+
+        <!-- Menu Bar -->
+        <nav class="w-full bg-indigo-600 rounded-lg shadow-md mb-6">
+            <ul class="flex justify-around items-center text-white font-semibold text-lg">
+                <li id="menu-schedule" class="p-4 border-b-2 border-transparent cursor-pointer hover:bg-indigo-700 transition-colors" onclick="showView('schedule')">산행안내</li>
+                <li id="menu-board" class="p-4 border-b-2 border-transparent cursor-pointer hover:bg-indigo-700 transition-colors" onclick="showView('board')">자유게시판</li>
+            </ul>
+        </nav>
+
+        <!-- Content Section -->
+        <div id="scheduleSection" class="w-full space-y-6">
+            <div class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">📢 다가오는 산행 일정</h2>
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-xl shadow border border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">산행정보</h3>
+                        <p class="text-gray-600 mb-1">
+                            <strong class="font-bold">산행일:</strong>
+                            <span id="tripDate" class="editable-field" contenteditable="true">oo월 00일(토) 00시 매장 앞 출발</span>
+                        </p>
+                        <p class="text-gray-600 mb-1">
+                            <strong class="font-bold">산행지:</strong>
+                            <span id="tripLocation" class="editable-field" contenteditable="true">장소</span>
+                        </p>
+                        <p class="text-gray-600 mb-1">
+                            <strong class="font-bold">산행코스:</strong>
+                            <span id="tripCourse" class="editable-field" contenteditable="true">코스</span>
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow border border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">준비물 및 제공</h3>
+                        <p class="text-gray-600 mb-1">
+                            <strong class="font-bold">준비물:</strong>
+                            <span id="preparation" class="editable-field" contenteditable="true">간단한 개인 반찬 및 간식</span>
+                        </p>
+                        <p class="text-gray-600 mb-1">
+                            <strong class="font-bold">제공:</strong>
+                            <span id="supply" class="editable-field" contenteditable="true">음료, 떡, 밥, 하산주, 등산용품 경품</span>
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow border border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">회비 및 문의전화</h3>
+                        <p class="text-gray-600 mb-1">
+                            <strong class="font-bold">기본회비:</strong>
+                            <span id="fee" class="editable-field" contenteditable="true">3만 5천원</span>
+                            <span class="text-gray-600">추가비용: </span>
+                            <span id="extraCost" class="editable-field" contenteditable="true">유무</span>
+                        </p>
+                        <p class="text-gray-600 mb-1">
+                            <strong class="font-bold">입금계좌:</strong>
+                            <span id="accountInfo" class="editable-field" contenteditable="true">농협 302-1248-7785-21 (양순자)</span>
+                        </p>
+                        <p class="text-gray-600 mb-1">
+                            <strong class="font-bold">문의전화:</strong>
+                            <span id="contactInfo" class="editable-field" contenteditable="true">콜핑: 043-264-0278, 총무 양순자 010-6242-5090</span>
+                        </p>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 mt-4">산행 중 비상연락처</h3>
+                        <p class="text-gray-600 mb-1">
+                            <span id="emergencyContact1" class="editable-field" contenteditable="true">010-5331-1675</span>
+                        </p>
+                        <p class="text-gray-600">
+                            <span id="emergencyContact2" class="editable-field" contenteditable="true">010-5495-9603</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2">
+                    <button onclick="saveTripInfo()" class="px-4 py-2 rounded-lg font-semibold bg-indigo-500 text-white hover:bg-indigo-600 transition-colors w-full sm:w-auto">정보 저장</button>
+                    <div class="flex-grow"></div>
+                    <span id="registeredCount" class="text-sm font-semibold text-blue-600">신청 인원: 0명</span>
+                    <input id="nameInput" type="text" placeholder="이름을 입력해 주세요" class="w-full sm:w-auto p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"/>
+                    <button onclick="handleRegistration()" class="px-4 py-2 rounded-lg font-semibold bg-blue-500 text-white hover:bg-blue-600 transition-colors w-full sm:w-auto" id="registrationButton">신청하기</button>
+                </div>
+            </div>
+
+            <!-- AI Functionality Section -->
+            <div class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200 space-y-4">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">🤖 인공지능 기능</h2>
+                <div class="bg-white p-4 rounded-xl shadow border border-gray-200">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">산행지 이미지 보기</h3>
+                    <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                        <input id="mountainInput" type="text" placeholder="ex) 설악산" class="flex-grow p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
+                        <button onclick="generateMountainImage()" class="px-4 py-2 rounded-lg font-semibold bg-green-500 text-white hover:bg-green-600 transition-colors">이미지 생성</button>
+                    </div>
+                    <div id="imageDisplay" class="w-full h-48 bg-gray-200 rounded-xl flex items-center justify-center text-gray-500">
+                        여기에 이미지가 표시됩니다.
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow border border-gray-200">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">안전한 산행 요령</h3>
+                    <button onclick="generateHikingTips()" class="px-4 py-2 rounded-lg font-semibold bg-purple-500 text-white hover:bg-purple-600 transition-colors mb-4">요령 보기</button>
+                    <div id="tipsDisplay" class="text-sm text-gray-700">
+                        버튼을 눌러 안전 산행 요령을 확인하세요.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seat Plan Section -->
+            <div id="seatPlanSection" class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">💺 좌석 배치 (총 44석)</h2>
+                <div class="bus-layout p-4 rounded-xl bg-gray-200 border border-gray-300">
+                    <!-- Seats are dynamically generated here -->
+                </div>
+                <div id="userMagnets" class="flex flex-wrap gap-2 mt-4 p-4 rounded-xl bg-gray-100 border border-gray-300 min-h-[5rem]">
+                    <!-- User magnets are placed here -->
+                </div>
+                <div class="mt-4 text-center text-sm text-gray-500">
+                    좌석에 사용자를 드래그하여 배치할 수 있습니다.
+                </div>
+            </div>
+        </div>
+
+        <!-- Free Board Section -->
+        <div id="boardSection" class="w-full space-y-6 hidden">
+            <div class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">📝 자유게시판</h2>
+                <div class="bg-white p-4 rounded-xl shadow border border-gray-200 space-y-4">
+                    <textarea id="postContent" class="w-full h-24 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="자유롭게 글을 작성해 주세요..."></textarea>
+                    <button onclick="submitPost()" class="w-full px-4 py-2 rounded-lg font-semibold bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">글 올리기</button>
+                </div>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200 mt-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">최신 글 목록</h3>
+                <div id="postsList" class="space-y-4">
+                    <!-- Posts are dynamically displayed here -->
+                    <div class="text-gray-500 text-center">아직 게시물이 없습니다.</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Modal Container -->
+    <div id="messageModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+            <h3 id="modalMessage" class="text-xl font-bold text-gray-800 mb-4"></h3>
+            <button onclick="document.getElementById('messageModal').classList.add('hidden')" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">확인</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, collection, setDoc, updateDoc, arrayUnion, arrayRemove, getDoc, setLogLevel, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
+        // Firestore settings and variables
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth, userId;
+        const publicSchedulesPath = `/artifacts/${appId}/public/data/schedules`;
+        const postsCollectionPath = `/artifacts/${appId}/public/data/posts`;
+        const tripId = 'kolping_trip';
+
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const registrationButton = document.getElementById('registrationButton');
+        const registeredCountDisplay = document.getElementById('registeredCount');
+        const nameInput = document.getElementById('nameInput');
+        const seatContainer = document.querySelector('.bus-layout');
+        const userMagnetsContainer = document.getElementById('userMagnets');
+        const imageDisplay = document.getElementById('imageDisplay');
+        const tipsDisplay = document.getElementById('tipsDisplay');
+        const scheduleSection = document.getElementById('scheduleSection');
+        const boardSection = document.getElementById('boardSection');
+        const postsList = document.getElementById('postsList');
+        const menuSchedule = document.getElementById('menu-schedule');
+        const menuBoard = document.getElementById('menu-board');
+
+        const totalSeats = 44;
+        let isAuthReady = false;
+        let seatAssignments = {};
+        let userList = [];
+        let postsListener = null;
+
+        // Enable debug logging
+        setLogLevel('debug');
+
+        /**
+         * Initializes Firebase and handles user authentication.
+         */
+        async function initFirebase() {
+            console.log("Firebase initialization started.");
+            loadingIndicator.classList.remove('hidden');
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                // Use a direct sign-in method to ensure authentication is complete before proceeding
+                let user;
+                if (initialAuthToken) {
+                    const userCredential = await signInWithCustomToken(auth, initialAuthToken);
+                    user = userCredential.user;
+                } else {
+                    const userCredential = await signInAnonymously(auth);
+                    user = userCredential.user;
+                }
+                
+                // Wait for the user to be fully authenticated and permissions to be ready.
+                await new Promise(resolve => {
+                    const unsubscribe = onAuthStateChanged(auth, u => {
+                        if (u) {
+                            unsubscribe();
+                            resolve(u);
+                        }
+                    });
+                });
+                
+                if (user) {
+                    console.log("Authentication complete. User ID:", user.uid);
+                    userId = user.uid;
+                    document.getElementById('userIdDisplay').textContent = `사용자 ID: ${userId.slice(0, 8)}...`;
+                    
+                    // Add a small delay to ensure permissions are fully loaded
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    
+                    isAuthReady = true;
+                    
+                    // Set up Firestore listeners only after authentication is complete
+                    const scheduleDocRef = doc(db, publicSchedulesPath, tripId);
+                    const postsColRef = collection(db, postsCollectionPath);
+
+                    try {
+                        // Check for and create initial document with retries if permission is denied
+                        const maxAttempts = 5;
+                        for (let i = 0; i < maxAttempts; i++) {
+                            try {
+                                const docSnap = await getDoc(scheduleDocRef);
+                                if (!docSnap.exists()) {
+                                    console.log("Document does not exist, attempting to create initial document.");
+                                    await setDoc(scheduleDocRef, { registeredUsers: [], assignments: {}, tripInfo: {} });
+                                    console.log("Initial document created.");
+                                }
+                                break; // Exit loop on success
+                            } catch (error) {
+                                if (error.code === 'permission-denied' && i < maxAttempts - 1) {
+                                    console.warn(`Attempt ${i + 1} failed due to permission-denied, retrying in 500ms...`);
+                                    await new Promise(resolve => setTimeout(resolve, 500));
+                                } else {
+                                    throw error; // Re-throw the error if it's not a permission issue or we've reached max attempts
+                                }
+                            }
+                        }
+
+                        // Use onSnapshot for real-time data updates
+                        onSnapshot(scheduleDocRef, (docSnap) => {
+                            const data = docSnap.data();
+                            
+                            if (!docSnap.exists()) {
+                                return;
+                            }
+                            
+                            userList = data?.registeredUsers || [];
+                            registeredCountDisplay.textContent = `신청 인원: ${userList.length}명`;
+                            const currentUserInfo = userList.find(u => u.userId === userId);
+                            const isRegistered = !!currentUserInfo;
+                            
+                            nameInput.value = currentUserInfo?.name || '';
+                            registrationButton.textContent = isRegistered ? '신청 취소' : '신청하기';
+                            registrationButton.classList.toggle('bg-red-500', isRegistered);
+                            registrationButton.classList.toggle('hover:bg-red-600', isRegistered);
+                            registrationButton.classList.toggle('bg-blue-500', !isRegistered);
+                            registrationButton.classList.toggle('hover:bg-blue-600', !isRegistered);
+
+                            updateEditableFields(data?.tripInfo);
+                            updateMagnetsAndSeats(userList, data?.assignments);
+                        }, (error) => {
+                            console.error("Firestore real-time listener error:", error);
+                            showMessageModal('Failed to load data. Please try again later.');
+                        });
+
+                        // Set up the board listener
+                        postsListener = onSnapshot(postsColRef, (snapshot) => {
+                            const posts = [];
+                            snapshot.forEach(doc => {
+                                posts.push({ id: doc.id, ...doc.data() });
+                            });
+                            // Sort by timestamp, newest first
+                            posts.sort((a, b) => b.timestamp - a.timestamp);
+                            renderPosts(posts);
+                        }, (error) => {
+                            console.error("Board listener error:", error);
+                        });
+
+                    } catch (error) {
+                         console.error("Error during initial document creation or verification:", error);
+                         showMessageModal('An error occurred while loading data. Please try again later.');
+                    }
+
+                }
+            } catch (error) {
+                console.error("Firebase initialization error:", error);
+                showMessageModal('An error occurred. Please check the console.');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+                showView('schedule'); // Set the initial view
+            }
+        }
+        
+        /**
+         * @description Updates editable fields with trip information from Firestore.
+         */
+        function updateEditableFields(tripInfo) {
+            if (!tripInfo) return;
+            document.getElementById('tripDate').textContent = tripInfo.tripDate || 'oo월 00일(토) 00시 매장 앞 출발';
+            document.getElementById('tripLocation').textContent = tripInfo.tripLocation || '장소';
+            document.getElementById('tripCourse').textContent = tripInfo.tripCourse || '코스';
+            document.getElementById('preparation').textContent = tripInfo.preparation || '간단한 개인 반찬 및 간식';
+            document.getElementById('supply').textContent = tripInfo.supply || '음료, 떡, 밥, 하산주, 등산용품 경품';
+            document.getElementById('fee').textContent = tripInfo.fee || '3만 5천원';
+            document.getElementById('extraCost').textContent = tripInfo.extraCost || '유무';
+            document.getElementById('accountInfo').textContent = tripInfo.accountInfo || '농협 302-1248-7785-21 (양순자)';
+            document.getElementById('contactInfo').textContent = tripInfo.contactInfo || '콜핑: 043-264-0278, 총무 양순자 010-6242-5090';
+            document.getElementById('emergencyContact1').textContent = tripInfo.emergencyContact1 || '010-5331-1675';
+            document.getElementById('emergencyContact2').textContent = tripInfo.emergencyContact2 || '010-5495-9603';
+        }
+        
+        /**
+         * @description Saves the content of the editable fields to Firestore.
+         */
+        async function saveTripInfo() {
+            if (!isAuthReady) {
+                showMessageModal('User is authenticating. Please try again shortly.');
+                return;
+            }
+            try {
+                const scheduleDocRef = doc(db, publicSchedulesPath, tripId);
+                const newTripInfo = {
+                    tripDate: document.getElementById('tripDate').textContent,
+                    tripLocation: document.getElementById('tripLocation').textContent,
+                    tripCourse: document.getElementById('tripCourse').textContent,
+                    preparation: document.getElementById('preparation').textContent,
+                    supply: document.getElementById('supply').textContent,
+                    fee: document.getElementById('fee').textContent,
+                    extraCost: document.getElementById('extraCost').textContent,
+                    accountInfo: document.getElementById('accountInfo').textContent,
+                    contactInfo: document.getElementById('contactInfo').textContent,
+                    emergencyContact1: document.getElementById('emergencyContact1').textContent,
+                    emergencyContact2: document.getElementById('emergencyContact2').textContent,
+                };
+
+                await updateDoc(scheduleDocRef, { tripInfo: newTripInfo });
+                showMessageModal('Information saved successfully.');
+
+            } catch (error) {
+                console.error("Error saving information:", error);
+                showMessageModal('An error occurred while saving information. Please check the console.');
+            }
+        }
+
+        /**
+         * @description Updates seats and magnets based on registered users from Firestore.
+         */
+        function updateMagnetsAndSeats(registeredUsers, assignments) {
+            seatAssignments = assignments || {};
+            seatContainer.innerHTML = '';
+
+            const totalSeats = 44;
+            const seatsPerRow = 4;
+            const totalRows = totalSeats / seatsPerRow;
+
+            const seatNumbers = [];
+            for (let i = 1; i <= totalSeats; i++) {
+                seatNumbers.push(i);
+            }
+            
+            for (let i = 0; i < totalRows; i++) {
+                // Left 2 seats
+                for (let j = 0; j < 2; j++) {
+                    const seatNum = seatNumbers[i * seatsPerRow + j];
+                    const seat = createSeatElement(seatNum, registeredUsers, seatAssignments);
+                    seatContainer.appendChild(seat);
+                }
+                
+                // Aisle
+                const aisle = document.createElement('div');
+                aisle.className = 'aisle-gap';
+                seatContainer.appendChild(aisle);
+
+                // Right 2 seats
+                for (let j = 2; j < seatsPerRow; j++) {
+                    const seatNum = seatNumbers[i * seatsPerRow + j];
+                    const seat = createSeatElement(seatNum, registeredUsers, seatAssignments);
+                    seatContainer.appendChild(seat);
+                }
+            }
+            
+            // Render user magnets
+            userMagnetsContainer.innerHTML = '';
+            const assignedUserIds = Object.values(seatAssignments);
+            const unassignedUsers = registeredUsers.filter(u => !assignedUserIds.includes(u.userId));
+
+            unassignedUsers.forEach(user => {
+                const magnet = document.createElement('div');
+                magnet.className = 'bg-blue-400 text-white px-3 py-1 rounded-full shadow-md text-xs font-semibold draggable hover:bg-blue-500 transition-colors cursor-pointer';
+                magnet.textContent = user.name || user.userId.slice(0, 8) + '...';
+                magnet.draggable = true;
+                magnet.dataset.userId = user.userId;
+                magnet.dataset.userName = user.name || '';
+                magnet.ondragstart = handleDragStart;
+                magnet.addEventListener('touchstart', handleTouchStart);
+                userMagnetsContainer.appendChild(magnet);
+            });
+        }
+        
+        function createSeatElement(seatNum, registeredUsers, assignments) {
+            const seat = document.createElement('div');
+            seat.id = `seat-${seatNum}`;
+            seat.className = `bus-seat bg-white rounded-lg shadow-sm border border-gray-300 flex items-center justify-center text-sm text-gray-500 hover:bg-gray-200 transition-colors`;
+            seat.textContent = `좌석 ${seatNum}`;
+            seat.dataset.seatNumber = seatNum;
+            seat.ondragover = (e) => e.preventDefault();
+            seat.ondrop = handleDrop;
+            seat.addEventListener('touchend', handleTouchEnd);
+
+            const assignedUserId = assignments[seatNum];
+            const userInfo = assignedUserId ? registeredUsers.find(u => u.userId === assignedUserId) : null;
+            if (userInfo) {
+                seat.innerHTML = `
+                    <div class="flex flex-col items-center justify-center">
+                        <span class="text-xs font-semibold text-gray-400 mb-1">좌석 ${seatNum}</span>
+                        <span class="font-bold text-gray-800">${userInfo.name || '이름 없음'}</span>
+                    </div>
+                `;
+                seat.classList.add('bg-green-300');
+                seat.dataset.assignedUserId = assignedUserId;
+            }
+            return seat;
+        }
+
+        let draggedUserId = null;
+        let draggedUserName = null;
+        let draggedFromSeat = null;
+        let touchClone = null;
+
+        function handleDragStart(event) {
+            draggedUserId = event.target.dataset.userId;
+            draggedUserName = event.target.dataset.userName;
+            draggedFromSeat = event.target.dataset.seatNumber;
+            event.dataTransfer.setData('text/plain', draggedUserId);
+            setTimeout(() => {
+                event.target.classList.add('dragging');
+            }, 0);
+        }
+
+        async function handleDrop(event) {
+            event.preventDefault();
+
+            if (!isAuthReady) {
+                showMessageModal('User is authenticating. Please try again shortly.');
+                return;
+            }
+
+            const droppedOnSeat = event.currentTarget.dataset.seatNumber;
+            const assignedUserId = event.currentTarget.dataset.assignedUserId;
+            const draggedElement = document.querySelector('.dragging');
+
+            if (assignedUserId) {
+                showMessageModal('This seat is already taken.');
+                if (draggedElement) draggedElement.classList.remove('dragging');
+                draggedUserId = null;
+                draggedUserName = null;
+                draggedFromSeat = null;
+                return;
+            }
+
+            if (draggedUserId && droppedOnSeat) {
+                try {
+                    const scheduleDocRef = doc(db, publicSchedulesPath, tripId);
+                    const newAssignments = { ...seatAssignments };
+                    if (draggedFromSeat) {
+                        delete newAssignments[draggedFromSeat];
+                    }
+                    newAssignments[droppedOnSeat] = draggedUserId;
+                    
+                    await updateDoc(scheduleDocRef, { assignments: newAssignments });
+                } catch (error) {
+                    console.error("Error saving seat assignment:", error);
+                    showMessageModal('An error occurred while saving seat assignment. Please try again later.');
+                }
+            }
+            if (draggedElement) draggedElement.classList.remove('dragging');
+            draggedUserId = null;
+            draggedUserName = null;
+            draggedFromSeat = null;
+        }
+
+        // --- Touch Drag and Drop Logic ---
+        function handleTouchStart(event) {
+            event.preventDefault();
+            draggedUserId = event.target.dataset.userId;
+            draggedUserName = event.target.dataset.userName;
+            draggedFromSeat = event.target.dataset.seatNumber;
+
+            // Clone the element for visual feedback during drag
+            touchClone = event.target.cloneNode(true);
+            touchClone.classList.add('dragging');
+            touchClone.style.position = 'absolute';
+            touchClone.style.zIndex = '1000';
+            touchClone.style.pointerEvents = 'none'; // Allow touch events to pass through
+            document.body.appendChild(touchClone);
+
+            // Add touch move listener
+            document.addEventListener('touchmove', handleTouchMove);
+        }
+
+        function handleTouchMove(event) {
+            event.preventDefault();
+            if (touchClone) {
+                const touch = event.touches[0];
+                touchClone.style.left = `${touch.clientX - touchClone.offsetWidth / 2}px`;
+                touchClone.style.top = `${touch.clientY - touchClone.offsetHeight / 2}px`;
+            }
+        }
+
+        function handleTouchEnd(event) {
+            event.preventDefault();
+            // Remove touch move listener
+            document.removeEventListener('touchmove', handleTouchMove);
+
+            if (touchClone) {
+                const touch = event.changedTouches[0];
+                const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (targetElement && targetElement.classList.contains('bus-seat')) {
+                    handleDrop({
+                        preventDefault: () => {},
+                        currentTarget: targetElement
+                    });
+                }
+                document.body.removeChild(touchClone);
+                touchClone = null;
+            }
+        }
+        // --- End of Touch Logic ---
+
+        /**
+         * @description Handles registration and unregistration for the trip.
+         */
+        async function handleRegistration() {
+            if (!isAuthReady) {
+                showMessageModal('User is authenticating. Please try again shortly.');
+                return;
+            }
+
+            const name = nameInput.value.trim();
+            const isRegistered = userList.some(u => u.userId === userId);
+            const scheduleDocRef = doc(db, publicSchedulesPath, tripId);
+
+            try {
+                if (isRegistered) {
+                    // Unregister
+                    const userToRemove = userList.find(u => u.userId === userId);
+                    await updateDoc(scheduleDocRef, {
+                        registeredUsers: arrayRemove(userToRemove),
+                        assignments: JSON.parse(JSON.stringify(seatAssignments, (key, value) => {
+                            if (value === userId) {
+                                return undefined;
+                            }
+                            return value;
+                        }))
+                    });
+                    showMessageModal('Registration cancelled.');
+                } else {
+                    // Register
+                    if (!name) {
+                        showMessageModal('Please enter your name.');
+                        return;
+                    }
+                    await updateDoc(scheduleDocRef, {
+                        registeredUsers: arrayUnion({ userId: userId, name: name })
+                    });
+                    showMessageModal('Registration complete.');
+                }
+            } catch (error) {
+                console.error("Error handling registration:", error);
+                showMessageModal('An error occurred during registration. Please check the console.');
+            }
+        }
+        
+        // AI functions
+        async function generateMountainImage() {
+            const mountainName = document.getElementById('mountainInput').value.trim();
+            if (!mountainName) {
+                showMessageModal('Please enter a mountain name.');
+                return;
+            }
+
+            imageDisplay.innerHTML = `<div class="animate-spin h-8 w-8 border-4 border-green-500 border-solid rounded-full border-r-transparent"></div>`;
+
+            const payload = { instances: [{ prompt: `${mountainName}의 아름다운 풍경 사진` }], parameters: { "sampleCount": 1} };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                const base64Data = result?.predictions?.[0]?.bytesBase64Encoded;
+
+                if (base64Data) {
+                    imageDisplay.innerHTML = `<img src="data:image/png;base64,${base64Data}" alt="${mountainName} 사진" class="w-full h-full object-cover rounded-xl" />`;
+                } else {
+                    imageDisplay.innerHTML = `<p class="text-gray-500">Failed to generate image. Please try again.</p>`;
+                }
+            } catch (error) {
+                console.error("Image generation error:", error);
+                imageDisplay.innerHTML = `<p class="text-gray-500">An error occurred while generating the image.</p>`;
+            }
+        }
+
+        async function generateHikingTips() {
+            tipsDisplay.innerHTML = `<div class="text-center text-gray-500"><div class="animate-spin inline-block h-6 w-6 border-4 border-purple-500 border-solid rounded-full border-r-transparent"></div></div>`;
+            
+            const systemPrompt = "Act as an expert providing tips for safe hiking. Explain the key points concisely, listing the sentences in a numbered list. Each item should be 50 characters or less.";
+            const userQuery = "안전한 등산 요령";
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (text) {
+                    tipsDisplay.innerHTML = `<pre class="whitespace-pre-wrap">${text}</pre>`;
+                } else {
+                    tipsDisplay.innerHTML = `<p class="text-red-500">Failed to retrieve tips.</p>`;
+                }
+            } catch (error) {
+                console.error("Tip generation error:", error);
+                tipsDisplay.innerHTML = `<p class="text-red-500">An error occurred while generating tips.</p>`;
+            }
+        }
+
+        // --- Free Board Functions ---
+        function showView(viewName) {
+            scheduleSection.classList.add('hidden');
+            boardSection.classList.add('hidden');
+            menuSchedule.classList.remove('border-indigo-300', 'text-white');
+            menuBoard.classList.remove('border-indigo-300', 'text-white');
+            menuSchedule.classList.add('border-transparent', 'text-indigo-200');
+            menuBoard.classList.add('border-transparent', 'text-indigo-200');
+
+            if (viewName === 'schedule') {
+                scheduleSection.classList.remove('hidden');
+                menuSchedule.classList.add('border-indigo-300', 'text-white');
+                menuSchedule.classList.remove('border-transparent', 'text-indigo-200');
+            } else if (viewName === 'board') {
+                boardSection.classList.remove('hidden');
+                menuBoard.classList.add('border-indigo-300', 'text-white');
+                menuBoard.classList.remove('border-transparent', 'text-indigo-200');
+            }
+        }
+
+        async function submitPost() {
+            if (!isAuthReady) {
+                showMessageModal('User is authenticating. Please try again shortly.');
+                return;
+            }
+
+            const content = document.getElementById('postContent').value.trim();
+            if (!content) {
+                showMessageModal('Please enter a post content.');
+                return;
+            }
+
+            const postsColRef = collection(db, postsCollectionPath);
+            try {
+                await addDoc(postsColRef, {
+                    userId: userId,
+                    userName: userList.find(u => u.userId === userId)?.name || '익명',
+                    content: content,
+                    timestamp: Date.now()
+                });
+                document.getElementById('postContent').value = '';
+                showMessageModal('Post registered successfully.');
+            } catch (error) {
+                console.error("Error submitting post:", error);
+                showMessageModal('An error occurred while submitting the post. Please check the console.');
+            }
+        }
+
+        function renderPosts(posts) {
+            if (posts.length === 0) {
+                postsList.innerHTML = `<div class="text-gray-500 text-center">There are no posts yet.</div>`;
+                return;
+            }
+            postsList.innerHTML = posts.map(post => `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                    <p class="text-sm font-bold text-gray-800 mb-1">${post.userName}</p>
+                    <p class="text-gray-700">${post.content}</p>
+                    <p class="text-xs text-gray-400 mt-2">${new Date(post.timestamp).toLocaleString()}</p>
+                </div>
+            `).join('');
+        }
+        
+        // --- Utility functions ---
+        function showMessageModal(message) {
+            const modal = document.getElementById('messageModal');
+            document.getElementById('modalMessage').textContent = message;
+            modal.classList.remove('hidden');
+        }
+
+        window.onload = initFirebase;
+        window.handleRegistration = handleRegistration;
+        window.saveTripInfo = saveTripInfo;
+        window.generateMountainImage = generateMountainImage;
+        window.generateHikingTips = generateHikingTips;
+        window.showView = showView;
+        window.submitPost = submitPost;
+    </script>
+</body>
+</html>
