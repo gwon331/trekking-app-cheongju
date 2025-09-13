@@ -13,24 +13,22 @@
             font-family: 'Noto Sans KR', sans-serif;
             background-color: #f3f4f6;
         }
-        .bus-layout {
-            display: grid;
-            gap: 0.75rem;
-            grid-template-columns: repeat(2, 1fr) 2rem repeat(2, 1fr);
-        }
-        .bus-seat {
+        .seat-table {
             width: 100%;
-            height: 4rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
+            border-collapse: collapse;
+            font-size: 1rem;
             text-align: center;
-            cursor: pointer;
         }
-        .aisle-gap {
-            grid-column: 3 / 4;
+        .seat-table td, .seat-table th {
+            border: 1px solid #d1d5db;
+            padding: 0.5rem;
+        }
+        .seat-input {
+            width: 100%;
+            text-align: center;
+            border: none;
+            outline: none;
+            background: none;
         }
         .editable-field {
             cursor: text;
@@ -47,7 +45,7 @@
             background-image: url('https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=1470&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            color: yellow; /* Changed to yellow for better contrast */
+            color: yellow;
             padding: 2rem;
             border-radius: 1rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -144,11 +142,45 @@
             <!-- 좌석 배치 섹션 -->
             <div id="seatPlanSection" class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200">
                 <h2 class="text-2xl font-semibold text-gray-700 mb-4">💺 좌석 배치 (총 44석)</h2>
-                <div class="bus-layout p-4 rounded-xl bg-gray-200 border border-gray-300">
-                    <!-- Seats are dynamically generated here -->
-                </div>
-                <div id="userMagnets" class="flex flex-wrap gap-2 mt-4 p-4 rounded-xl bg-gray-100 border border-gray-300 min-h-[5rem]">
-                    <!-- User magnets are placed here -->
+                <div class="flex justify-center space-x-8">
+                    <table class="seat-table">
+                        <colgroup>
+                            <col style="width: 50%;">
+                            <col style="width: 50%;">
+                        </colgroup>
+                        <tbody>
+                            <!-- Left side seats (1-2, 5-6, etc.) -->
+                            <script>
+                                for (let i = 0; i < 11; i++) {
+                                    document.write(`
+                                        <tr>
+                                            <td>${i * 4 + 1}. <input type="text" class="seat-input" data-seat="${i * 4 + 1}" value="000" /></td>
+                                            <td>${i * 4 + 2}. <input type="text" class="seat-input" data-seat="${i * 4 + 2}" value="000" /></td>
+                                        </tr>
+                                    `);
+                                }
+                            </script>
+                        </tbody>
+                    </table>
+                    <table class="seat-table">
+                        <colgroup>
+                            <col style="width: 50%;">
+                            <col style="width: 50%;">
+                        </colgroup>
+                        <tbody>
+                            <!-- Right side seats (3-4, 7-8, etc.) -->
+                            <script>
+                                for (let i = 0; i < 11; i++) {
+                                    document.write(`
+                                        <tr>
+                                            <td>${i * 4 + 3}. <input type="text" class="seat-input" data-seat="${i * 4 + 3}" value="000" /></td>
+                                            <td>${i * 4 + 4}. <input type="text" class="seat-input" data-seat="${i * 4 + 4}" value="000" /></td>
+                                        </tr>
+                                    `);
+                                }
+                            </script>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             
@@ -285,8 +317,6 @@
         const registrationButton = document.getElementById('registrationButton');
         const registeredCountDisplay = document.getElementById('registeredCount');
         const nameInput = document.getElementById('nameInput');
-        const seatContainer = document.querySelector('.bus-layout');
-        const userMagnetsContainer = document.getElementById('userMagnets');
         const mountainPhotoInput = document.getElementById('mountainPhotoInput');
         const mountainPhotoGallery = document.getElementById('mountainPhotoGallery');
         const hikingTipsContent = document.getElementById('hikingTipsContent');
@@ -472,28 +502,22 @@
             }
         }
 
-        function updateSeatsAndWaitingList() {
-            seatContainer.innerHTML = '';
-            const seatNumbers = Array.from({ length: totalSeats }, (_, i) => i + 1);
-            const seatsPerRow = 4;
-            const totalRows = totalSeats / seatsPerRow;
-            
-            for (let i = 0; i < totalRows; i++) {
-                for (let j = 0; j < 2; j++) {
-                    const seatNum = seatNumbers[i * seatsPerRow + j];
-                    const seat = createSeatElement(seatNum, seatAssignments);
-                    seatContainer.appendChild(seat);
+        async function updateSeatsAndWaitingList() {
+            // Update seat table
+            const seats = document.querySelectorAll('.seat-input');
+            seats.forEach(seatInput => {
+                const seatNum = seatInput.dataset.seat;
+                const assignedUserInfo = seatAssignments[seatNum];
+                if (assignedUserInfo) {
+                    seatInput.value = assignedUserInfo.name;
+                    seatInput.parentNode.style.backgroundColor = '#bbf7d0'; // Green background for reserved seats
+                } else {
+                    seatInput.value = '000';
+                    seatInput.parentNode.style.backgroundColor = '#fff';
                 }
-                const aisle = document.createElement('div');
-                aisle.className = 'aisle-gap';
-                seatContainer.appendChild(aisle);
-                for (let j = 2; j < seatsPerRow; j++) {
-                    const seatNum = seatNumbers[i * seatsPerRow + j];
-                    const seat = createSeatElement(seatNum, seatAssignments);
-                    seatContainer.appendChild(seat);
-                }
-            }
-        
+            });
+
+            // Update waiting list
             const waitingListElements = document.querySelectorAll('.editable-name');
             waitingListElements.forEach((element, index) => {
                 const name = waitingList[index] || '000';
@@ -503,89 +527,33 @@
                 } else {
                     element.classList.remove('bg-gray-300');
                 }
-                element.onfocus = () => {
-                    if (element.textContent === '000') {
-                        element.textContent = '';
-                    }
-                };
-                element.onblur = async () => {
-                    let newName = element.textContent.trim();
-                    if (newName === '') {
-                        newName = '000';
-                    }
-                    if (waitingList[index] !== newName) {
-                        const newWaitingList = [...waitingList];
-                        newWaitingList[index] = newName === '000' ? null : newName;
-                        try {
-                            const scheduleDocRef = doc(db, publicSchedulesPath, tripId);
-                            await updateDoc(scheduleDocRef, { waitingList: newWaitingList.filter(Boolean) });
-                        } catch (error) {
-                            console.error("대기자 명단 업데이트 오류:", error);
-                            showMessageModal('대기자 명단 업데이트 중 오류가 발생했습니다.');
-                        }
-                    }
-                };
             });
         }
         
-        function createSeatElement(seatNum, assignments) {
-            const seat = document.createElement('div');
-            const assignedUserInfo = assignments[seatNum];
-            seat.id = `seat-${seatNum}`;
-            seat.className = `bus-seat bg-white rounded-lg shadow-sm border border-gray-300 flex flex-col items-center justify-center text-sm text-gray-500 hover:bg-gray-200 transition-colors`;
-            
-            const seatNumberSpan = document.createElement('span');
-            seatNumberSpan.className = 'text-xs font-semibold text-gray-400 mb-1';
-            seatNumberSpan.textContent = `좌석 ${seatNum}`;
-
-            const seatNameSpan = document.createElement('span');
-            seatNameSpan.className = 'font-bold text-gray-800';
-            
-            const seatNameDiv = document.createElement('div');
-            seatNameDiv.className = 'font-bold text-gray-800 cursor-pointer editable-name';
-            seatNameDiv.dataset.seatNumber = seatNum;
-            seatNameDiv.contentEditable = true;
-            
-            if (assignedUserInfo) {
-                seatNameDiv.textContent = `예약자: ${assignedUserInfo.name}`;
-                seat.classList.add('bg-green-300');
-            } else {
-                seatNameDiv.textContent = `예약자: 000`;
-            }
-            
-            seat.appendChild(seatNumberSpan);
-            seat.appendChild(seatNameDiv);
-            
-            seatNameDiv.onfocus = () => {
-                if (seatNameDiv.textContent === '예약자: 000') {
-                    seatNameDiv.textContent = '예약자: ';
-                }
-            };
-
-            seatNameDiv.onblur = async () => {
-                let newName = seatNameDiv.textContent.replace('예약자: ', '').trim();
-                const scheduleDocRef = doc(db, publicSchedulesPath, tripId);
-                const newAssignments = { ...seatAssignments };
-                
-                if (newName === '' || newName === '000') {
-                    delete newAssignments[seatNum];
-                    seatNameDiv.textContent = '예약자: 000';
-                    seat.classList.remove('bg-green-300');
-                } else {
-                    newAssignments[seatNum] = { userId: `manual-${Date.now()}`, name: newName };
-                    seatNameDiv.textContent = `예약자: ${newName}`;
-                    seat.classList.add('bg-green-300');
-                }
-                
-                try {
-                     await updateDoc(scheduleDocRef, { assignments: newAssignments });
-                } catch (error) {
-                    console.error("좌석 업데이트 오류:", error);
-                    showMessageModal('좌석 업데이트 중 오류가 발생했습니다.');
-                }
-            };
-            return seat;
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const seats = document.querySelectorAll('.seat-input');
+            seats.forEach(input => {
+                input.addEventListener('blur', async (e) => {
+                    const seatNum = e.target.dataset.seat;
+                    const newName = e.target.value.trim();
+                    const scheduleDocRef = doc(db, publicSchedulesPath, tripId);
+                    const newAssignments = { ...seatAssignments };
+                    
+                    if (newName === '' || newName === '000') {
+                        delete newAssignments[seatNum];
+                    } else {
+                        newAssignments[seatNum] = { userId: `manual-${Date.now()}`, name: newName };
+                    }
+                    
+                    try {
+                        await updateDoc(scheduleDocRef, { assignments: newAssignments });
+                    } catch (error) {
+                        console.error("좌석 업데이트 오류:", error);
+                        showMessageModal('좌석 업데이트 중 오류가 발생했습니다.');
+                    }
+                });
+            });
+        });
 
         async function handleRegistration() {
             if (!isAuthReady) {
@@ -764,21 +732,21 @@
         }
 
         function showView(viewName) {
-            scheduleSection.classList.add('hidden');
-            boardSection.classList.add('hidden');
-            menuSchedule.classList.remove('border-indigo-300', 'text-white');
-            menuBoard.classList.remove('border-indigo-300', 'text-white');
-            menuSchedule.classList.add('border-transparent', 'text-indigo-200');
-            menuBoard.classList.add('border-transparent', 'text-indigo-200');
+            document.getElementById('scheduleSection').classList.add('hidden');
+            document.getElementById('boardSection').classList.add('hidden');
+            document.getElementById('menu-schedule').classList.remove('border-indigo-300', 'text-white');
+            document.getElementById('menu-board').classList.remove('border-indigo-300', 'text-white');
+            document.getElementById('menu-schedule').classList.add('border-transparent', 'text-indigo-200');
+            document.getElementById('menu-board').classList.add('border-transparent', 'text-indigo-200');
 
             if (viewName === 'schedule') {
-                scheduleSection.classList.remove('hidden');
-                menuSchedule.classList.add('border-indigo-300', 'text-white');
-                menuSchedule.classList.remove('border-transparent', 'text-indigo-200');
+                document.getElementById('scheduleSection').classList.remove('hidden');
+                document.getElementById('menu-schedule').classList.add('border-indigo-300', 'text-white');
+                document.getElementById('menu-schedule').classList.remove('border-transparent', 'text-indigo-200');
             } else if (viewName === 'board') {
-                boardSection.classList.remove('hidden');
-                menuBoard.classList.add('border-indigo-300', 'text-white');
-                menuBoard.classList.remove('border-transparent', 'text-indigo-200');
+                document.getElementById('boardSection').classList.remove('hidden');
+                document.getElementById('menu-board').classList.add('border-indigo-300', 'text-white');
+                document.getElementById('menu-board').classList.remove('border-transparent', 'text-indigo-200');
                 showBoardView('free');
             }
         }
