@@ -1,5 +1,5 @@
 # trekking-app-cheongju
-청주콜핑산악회<!DOCTYPE html>
+청주콜핑산악회
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -550,14 +550,14 @@
                 seatNameDiv.textContent = `예약자: ${assignedUserInfo.name}`;
                 seat.classList.add('bg-green-300');
             } else {
-                seatNameDiv.textContent = '빈 좌석';
+                seatNameDiv.textContent = `예약자: 000`;
             }
             
             seat.appendChild(seatNumberSpan);
             seat.appendChild(seatNameDiv);
             
             seatNameDiv.onfocus = () => {
-                if (seatNameDiv.textContent === '빈 좌석') {
+                if (seatNameDiv.textContent === '예약자: 000') {
                     seatNameDiv.textContent = '예약자: ';
                 }
             };
@@ -569,7 +569,7 @@
                 
                 if (newName === '' || newName === '000') {
                     delete newAssignments[seatNum];
-                    seatNameDiv.textContent = '빈 좌석';
+                    seatNameDiv.textContent = '예약자: 000';
                     seat.classList.remove('bg-green-300');
                 } else {
                     newAssignments[seatNum] = { userId: `manual-${Date.now()}`, name: newName };
