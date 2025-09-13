@@ -1,5 +1,6 @@
 # trekking-app-cheongju
 청주콜핑산악회<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -867,6 +868,8 @@
     </script>
 </body>
 </html>
+
+
 
 
            
