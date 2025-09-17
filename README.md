@@ -131,11 +131,11 @@
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2">
-                    <button onclick="saveTripInfo()" class="px-4 py-2 rounded-lg font-semibold bg-indigo-500 text-white hover:bg-indigo-600 transition-colors w-full sm:w-auto">정보 저장</button>
+                    <button onclick="saveTripInfo()" class="px-4 py-2 rounded-lg font-semibold bg-indigo-500 text-white hover:bg-indigo-600 transition-colors w-full sm:w-auto" disabled>정보 저장</button>
                     <div class="flex-grow"></div>
                     <span id="registeredCount" class="text-sm font-semibold text-blue-600">신청 인원: 0명</span>
                     <input id="nameInput" type="text" placeholder="이름을 입력해 주세요" class="w-full sm:w-auto p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"/>
-                    <button onclick="handleRegistration()" class="px-4 py-2 rounded-lg font-semibold bg-blue-500 text-white hover:bg-blue-600 transition-colors w-full sm:w-auto" id="registrationButton">신청하기</button>
+                    <button onclick="handleRegistration()" class="px-4 py-2 rounded-lg font-semibold bg-blue-500 text-white hover:bg-blue-600 transition-colors w-full sm:w-auto" disabled id="registrationButton">신청하기</button>
                 </div>
             </div>
 
@@ -143,47 +143,13 @@
             <div id="seatPlanSection" class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200">
                 <h2 class="text-2xl font-semibold text-gray-700 mb-4">💺 좌석 배치 (총 44석)</h2>
                 <div class="flex justify-center space-x-8">
-                    <table class="seat-table">
-                        <colgroup>
-                            <col style="width: 50%;">
-                            <col style="width: 50%;">
-                        </colgroup>
-                        <tbody>
-                            <!-- Left side seats (1-2, 5-6, etc.) -->
-                            <script>
-                                for (let i = 0; i < 11; i++) {
-                                    document.write(`
-                                        <tr>
-                                            <td>${i * 4 + 1}. <input type="text" class="seat-input" data-seat="${i * 4 + 1}" value="000" /></td>
-                                            <td>${i * 4 + 2}. <input type="text" class="seat-input" data-seat="${i * 4 + 2}" value="000" /></td>
-                                        </tr>
-                                    `);
-                                }
-                            </script>
-                        </tbody>
-                    </table>
-                    <table class="seat-table">
-                        <colgroup>
-                            <col style="width: 50%;">
-                            <col style="width: 50%;">
-                        </colgroup>
-                        <tbody>
-                            <!-- Right side seats (3-4, 7-8, etc.) -->
-                            <script>
-                                for (let i = 0; i < 11; i++) {
-                                    document.write(`
-                                        <tr>
-                                            <td>${i * 4 + 3}. <input type="text" class="seat-input" data-seat="${i * 4 + 3}" value="000" /></td>
-                                            <td>${i * 4 + 4}. <input type="text" class="seat-input" data-seat="${i * 4 + 4}" value="000" /></td>
-                                        </tr>
-                                    `);
-                                }
-                            </script>
+                    <table class="seat-table" id="seatTable">
+                        <tbody id="seatTableBody">
                         </tbody>
                     </table>
                 </div>
             </div>
-            
+
             <!-- 대기자 명단 섹션 -->
             <div id="waitingListSection" class="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200 mt-6">
                 <h2 class="text-2xl font-semibold text-gray-700 mb-4">🚶‍♀️ 대기자 명단</h2>
@@ -333,6 +299,9 @@
         const boardMenuRecommend = document.getElementById('board-recommend');
         const recommendationsList = document.getElementById('recommendationsList');
         const waitingListSection = document.getElementById('waitingListSection');
+        const saveTripInfoButton = document.querySelector('button[onclick="saveTripInfo()"]');
+        
+        const seatTableBody = document.getElementById('seatTableBody');
 
         const totalSeats = 44;
         let isAuthReady = false;
@@ -375,6 +344,8 @@
                     document.getElementById('userIdDisplay').textContent = `사용자 ID: ${userId.slice(0, 8)}...`;
                     await new Promise(resolve => setTimeout(resolve, 300));
                     isAuthReady = true;
+                    saveTripInfoButton.disabled = false;
+                    registrationButton.disabled = false;
                     
                     const scheduleDocRef = doc(db, publicSchedulesPath, tripId);
                     const postsColRef = collection(db, postsCollectionPath);
@@ -503,34 +474,45 @@
         }
 
         async function updateSeatsAndWaitingList() {
-            // Update seat table
-            const seats = document.querySelectorAll('.seat-input');
-            seats.forEach(seatInput => {
-                const seatNum = seatInput.dataset.seat;
-                const assignedUserInfo = seatAssignments[seatNum];
-                if (assignedUserInfo) {
-                    seatInput.value = assignedUserInfo.name;
-                    seatInput.parentNode.style.backgroundColor = '#bbf7d0'; // Green background for reserved seats
-                } else {
-                    seatInput.value = '000';
-                    seatInput.parentNode.style.backgroundColor = '#fff';
-                }
-            });
+            // Rebuild the seat table from scratch to ensure correct structure
+            const seatTableBody = document.getElementById('seatTableBody');
+            seatTableBody.innerHTML = '';
 
-            // Update waiting list
-            const waitingListElements = document.querySelectorAll('.editable-name');
-            waitingListElements.forEach((element, index) => {
-                const name = waitingList[index] || '000';
-                element.textContent = name;
-                if (name !== '000') {
-                    element.classList.add('bg-gray-300');
-                } else {
-                    element.classList.remove('bg-gray-300');
+            const totalRows = 11;
+            for (let i = 0; i < totalRows; i++) {
+                const row = document.createElement('tr');
+                // Left side
+                for (let j = 0; j < 2; j++) {
+                    const seatNum = i * 4 + j + 1;
+                    const assignedUserInfo = seatAssignments[seatNum];
+                    const td = document.createElement('td');
+                    td.innerHTML = `${seatNum}. <input type="text" class="seat-input" data-seat="${seatNum}" value="${assignedUserInfo ? assignedUserInfo.name : '000'}" />`;
+                    if (assignedUserInfo) {
+                        td.style.backgroundColor = '#bbf7d0';
+                    } else {
+                        td.style.backgroundColor = '#fff';
+                    }
+                    row.appendChild(td);
                 }
-            });
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
+                
+                // Right side
+                for (let j = 2; j < 4; j++) {
+                    const seatNum = i * 4 + j + 1;
+                    const assignedUserInfo = seatAssignments[seatNum];
+                    const td = document.createElement('td');
+                    td.innerHTML = `${seatNum}. <input type="text" class="seat-input" data-seat="${seatNum}" value="${assignedUserInfo ? assignedUserInfo.name : '000'}" />`;
+                    if (assignedUserInfo) {
+                        td.style.backgroundColor = '#bbf7d0';
+                    } else {
+                        td.style.backgroundColor = '#fff';
+                    }
+                    row.appendChild(td);
+                }
+
+                seatTableBody.appendChild(row);
+            }
+
+            // Attach blur listeners to newly created inputs
             const seats = document.querySelectorAll('.seat-input');
             seats.forEach(input => {
                 input.addEventListener('blur', async (e) => {
@@ -553,8 +535,20 @@
                     }
                 });
             });
-        });
 
+            // Update waiting list
+            const waitingListElements = document.querySelectorAll('.editable-name');
+            waitingListElements.forEach((element, index) => {
+                const name = waitingList[index] || '000';
+                element.textContent = name;
+                if (name !== '000') {
+                    element.classList.add('bg-gray-300');
+                } else {
+                    element.classList.remove('bg-gray-300');
+                }
+            });
+        }
+        
         async function handleRegistration() {
             if (!isAuthReady) {
                 showMessageModal('사용자 인증 중입니다. 잠시 후 다시 시도해 주세요.');
